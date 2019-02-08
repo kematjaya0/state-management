@@ -1,0 +1,16 @@
+{
+    "name": "kematjaya/state-management",
+    "description": "state management for symfony 4 project",
+    "type": "library",
+    "require": {
+        "symfony/http-foundation": "^4.*"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Nur Hidayatullah",
+            "email": "kematjaya0@gmail.com"
+        }
+    ],
+    "minimum-stability": "beta"
+}
