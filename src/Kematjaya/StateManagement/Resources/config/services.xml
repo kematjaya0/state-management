@@ -1,0 +1,89 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+    
+    <services>
+        <defaults public="false" />
+        <service public="true" id="kematjaya.state.state_log_provider" class="Kematjaya\StateManagement\Utils\KmjStateLogProvider">
+            <argument type="service" id="request_stack" />
+            <argument type="service" id="doctrine.orm.default_entity_manager" />
+        </service>
+        
+        <service id="Kematjaya\StateManagement\EventListener\StateLogListener" class="Kematjaya\StateManagement\EventListener\StateLogListener" public="true">
+            <argument type="service" id="service_container" />
+            <tag name="doctrine.event_listener" event="onFlush" />
+        </service>
+        
+        <!--
+        
+        <service public="true" id="kematjaya.management_menu" class="Kematjaya\UserManagement\Service\ManagementMenu">
+            <argument type="service" id="doctrine.orm.default_entity_manager" />
+            <argument type="service" id="kematjaya.router" />
+            <argument type="service" id="session" />
+            <argument type="service" id="security.token_storage" />
+        </service>
+        
+        <service id="Kematjaya\UserManagement\Twig\DevExtension" class="Kematjaya\UserManagement\Twig\DevExtension" public="true">
+            <tag name="twig.extension"/>
+        </service>
+        
+        <service id="Kematjaya\UserManagement\Twig\RouteExtension" class="Kematjaya\UserManagement\Twig\RouteExtension" public="true">
+            <argument type="service" id="service_container" />
+            <tag name="twig.extension"/>
+        </service>
+        
+        <service id="Kematjaya\UserManagement\Twig\AuthorizationExtension" class="Kematjaya\UserManagement\Twig\AuthorizationExtension" public="false">
+            <argument type="service" id="router.default" />
+            <argument type="service" id="doctrine.orm.default_entity_manager" />
+            <argument type="service" id="security.token_storage" />
+            <tag name="twig.extension"/>
+        </service>
+        
+        <service id="kematjaya.user_provider" class="Kematjaya\UserManagement\Security\KmjUserProvider" public="true">
+            <argument type="service" id="doctrine.orm.default_entity_manager" />
+            <argument type="service" id="service_container" />
+        </service>
+        
+        <service id="kematjaya.user_manager" class="Kematjaya\UserManagement\Service\UserManager" public="true">
+            <argument type="service" id="doctrine.orm.default_entity_manager" />
+            <argument type="service" id="service_container" />
+        </service>
+        
+        <service id="Kematjaya\UserManagement\Security\LoginFormAuthenticator" class="Kematjaya\UserManagement\Security\LoginFormAuthenticator" public="true">
+            <argument type="service" id="router.default" />
+            <argument type="service" id="doctrine.orm.default_entity_manager" />
+            <argument type="service" id="form.factory" />
+            <argument type="service" id="service_container" />
+            <argument type="service" id="router.default" />
+            <argument type="service" id="security.csrf.token_manager" />
+            <argument type="service" id="security.encoder_factory.generic" />
+        </service>
+        
+        <service id="kematjaya.authorization" class="Kematjaya\UserManagement\EventListener\UrlAuthorization" public="true">
+            <argument type="service" id="router.default" />
+            <argument type="service" id="doctrine.orm.default_entity_manager" />
+            <argument type="service" id="security.token_storage" />
+            <argument type="service" id="router" />
+            <argument type="service" id="security.authorization_checker" />
+            <tag name="kernel.event_listener" event="kernel.request" method="onKernelRequest"/>
+        </service>
+        
+        <service id="Kematjaya\UserManagement\Security\AccessDeniedHandler" class="Kematjaya\UserManagement\Security\AccessDeniedHandler" public="true">
+            <argument type="service" id="router.default" />
+        </service>
+        
+        <service public="true" id="kematjaya.filter.module.type" class="Kematjaya\UserManagement\Filter\KmjModuleFilterType">
+            <argument type="service" id="service_container" />
+            <tag name="form.type" />
+        </service>
+        
+        <service public="true" id="kematjaya.form.module.type" class="Kematjaya\UserManagement\Form\KmjModuleType">
+            <argument type="service" id="service_container" />
+            <tag name="form.type" />
+        </service>
+        
+        <service id="kematjaya.encoder_factory" alias="security.encoder_factory" public="true" />-->
+    </services>
+</container>
