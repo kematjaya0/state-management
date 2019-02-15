@@ -3,7 +3,14 @@
     "description": "state management for symfony 4 project",
     "type": "library",
     "require": {
-        "symfony/http-foundation": "^4.0"
+        "symfony/http-foundation": "^4.0",
+        "symfony/http-kernel": "^4.2",
+        "symfony/dependency-injection": "^4.2",
+        "symfony/orm-pack": "^1.0",
+        "haydenpierce/class-finder": "^0.3.0@beta",
+        "lexik/form-filter-bundle": "^5.0",
+        "shapecode/hidden-entity-type-bundle": "^3.1",
+        "symfony/translation": "^4.2"
     },
     "license": "MIT",
     "authors": [
@@ -12,5 +19,10 @@
             "email": "kematjaya0@gmail.com"
         }
     ],
-    "minimum-stability": "beta"
+    "minimum-stability": "beta",
+    "autoload": {
+        "psr-0": {
+            "Kematjaya\\": "src/"
+        }
+    }
 }
