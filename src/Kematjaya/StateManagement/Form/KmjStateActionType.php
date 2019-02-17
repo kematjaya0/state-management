@@ -2,7 +2,6 @@
 
 namespace Kematjaya\StateManagement\Form;
 
-use Kematjaya\StateManagement\Model\KmjStateAction;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;

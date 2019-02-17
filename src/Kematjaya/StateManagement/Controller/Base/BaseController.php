@@ -11,7 +11,6 @@ namespace Kematjaya\StateManagement\Controller\Base;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use Lexik\Bundle\FormFilterBundle\Filter\FilterBuilderUpdaterInterface;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Query;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
@@ -24,17 +23,6 @@ class BaseController extends AbstractController{
      * @var limit
      */
     private $limit = 10;
-    
-    private $translation;
-    
-    private $filterBuilder;
-    
-    /*public function __construct(
-            TranslatorInterface $translation, 
-            FilterBuilderUpdaterInterface $filterBuilder) {
-        $this->translation = $translation;
-        $this->filterBuilder = $filterBuilder;
-    }*/
     
     /**
      * @return Symfony\Component\Translation\TranslatorInterface
