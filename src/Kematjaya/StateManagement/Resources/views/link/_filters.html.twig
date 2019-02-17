@@ -1,0 +1,11 @@
+{{form_start(filter)}}
+<tr>
+    <td>{{ form_widget(filter.code) }}</td>
+    <td>{{ form_widget(filter.name) }}</td>
+    <td>{{ form_widget(filter.description) }}</td>
+    <td>
+        <button type="submit" name="submit" class="btn btn-success btn-sm"><span class="fa fa-filter"></span> {{ 'filter'|trans }}</button>
+        <a href="{{path('kematjaya_link_index', {'_reset' : true })}}" class="btn btn-default btn-sm"><span class="fa fa-history"></span> {{ 'reset'|trans }}</a>
+    </td>
+</tr> 
+{{form_end(filter)}}

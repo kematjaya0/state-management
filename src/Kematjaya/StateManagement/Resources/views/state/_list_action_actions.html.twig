@@ -1,0 +1,7 @@
+{# @author Nur Hidayatullah <kematjaya0@gmail.com> #}
+<form class="form-inline" method="post" action="{{ path('kematjaya_state_delete_action', {'id': kmj_state_action.id}) }}" onsubmit="return confirm('{{'confirm.delete'|trans}}');">
+    <input type="hidden" name="_method" value="DELETE">
+    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ kmj_state_action.id) }}">
+    <a href="{{path('kematjaya_state_edit_action', {id: kmj_state_action.id})}}" class="btn btn-xs btn-primary"><span class="fa fa-edit"></span> {{'edit'|trans}}</a>
+    <button type="submit" class="btn btn-danger btn-xs"><span class="fa fa-trash"></span> {{'delete'|trans}}</button>
+</form>

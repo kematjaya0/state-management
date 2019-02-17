@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<routes xmlns="http://symfony.com/schema/routing"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/routing http://symfony.com/schema/routing/routing-1.0.xsd">
+
+    <route id="kematjaya_state_index" path="/state" methods="GET POST">
+        <default key="_controller">Kematjaya\StateManagement\Controller\KmjStateController:index</default>
+    </route>
+    
+    <route id="kematjaya_state_create" path="/state/create" methods="GET POST">
+        <default key="_controller">Kematjaya\StateManagement\Controller\KmjStateController:create</default>
+    </route>
+    
+    <route id="kematjaya_state_edit" path="/state/edit/{id}" methods="GET POST">
+        <default key="_controller">Kematjaya\StateManagement\Controller\KmjStateController:edit</default>
+    </route>
+    
+    <route id="kematjaya_state_delete" path="/state/delete/{id}" methods="POST DELETE">
+        <default key="_controller">Kematjaya\StateManagement\Controller\KmjStateController:delete</default>
+    </route>
+    
+    <route id="kematjaya_state_action" path="/state/action/{id}" methods="GET">
+        <default key="_controller">Kematjaya\StateManagement\Controller\KmjStateController:action</default>
+    </route>
+    
+    <route id="kematjaya_state_add_action" path="/state/add_action/{id}" methods="GET POST">
+        <default key="_controller">Kematjaya\StateManagement\Controller\KmjStateController:addAction</default>
+    </route>
+    
+    <route id="kematjaya_state_edit_action" path="/state/edit_action/{id}" methods="GET POST">
+        <default key="_controller">Kematjaya\StateManagement\Controller\KmjStateController:editAction</default>
+    </route>
+    
+    <route id="kematjaya_state_delete_action" path="/state/delete_action/{id}" methods="POST DELETE">
+        <default key="_controller">Kematjaya\StateManagement\Controller\KmjStateController:deleteAction</default>
+    </route>
+    
+</routes>

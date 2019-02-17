@@ -18,6 +18,19 @@ class Configuration implements ConfigurationInterface {
         $treeBuilder = new TreeBuilder();
         $rootNode = $treeBuilder->root('kematjaya');
         
+        $rootNode
+            ->children()
+                ->arrayNode('model')
+                    ->children()
+                        ->scalarNode('KmjState')->isRequired()->end()
+                        ->scalarNode('KmjLink')->isRequired()->end()
+                        ->scalarNode('KmjStateAction')->isRequired()->end()
+                        ->scalarNode('KmjStateLink')->isRequired()->end()
+                        ->scalarNode('KmjStateLog')->isRequired()->end()
+                    ->end()
+                ->end()
+            ->end();
+        
         return $treeBuilder;
     }
 }

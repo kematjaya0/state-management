@@ -1,0 +1,7 @@
+<form class="form-inline" method="post" action="{{ path('kematjaya_state_delete', {'id': kmj_state.id}) }}" onsubmit="return confirm('{{'confirm.delete'|trans}}');">
+    <input type="hidden" name="_method" value="DELETE">
+    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ kmj_state.id) }}">
+    <a href="{{path('kematjaya_state_edit', {id: kmj_state.id})}}" class="btn btn-xs btn-primary"><span class="fa fa-edit"></span> {{'edit'|trans}}</a>
+    <a href="{{path('kematjaya_state_action', {id: kmj_state.id})}}" class="btn btn-xs btn-info"><span class="fa fa-desktop"></span> {{'action'|trans}}</a>
+    <button type="submit" class="btn btn-danger btn-xs"><span class="fa fa-trash"></span> {{'delete'|trans}}</button>
+</form>
