@@ -46,7 +46,7 @@ class KmjStateActionType extends AbstractType
                 },
                 'choice_label' => 'name', "attr" => ["class" => "form-control"]]);
             $form->add('label', TextType::class, ["attr" => ["class" => "form-control"]]);
-            $form->add('description', TextareaType::class, ["attr" => ["class" => "form-control"]]);
+            $form->add('description', TextareaType::class, ["required" => false, "attr" => ["class" => "form-control"]]);
         });
         
     }

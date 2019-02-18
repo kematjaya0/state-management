@@ -12,6 +12,7 @@ use Kematjaya\StateManagement\Utils\EntityStateInterface;
 use Kematjaya\StateManagement\Model\KmjStateLog;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class KmjStateLogProvider {
     
@@ -19,14 +20,17 @@ class KmjStateLogProvider {
     
     private $entityManager;
     
-    public function __construct(RequestStack $requestStack, EntityManagerInterface $entityManager) {
+    private $container;
+    
+    public function __construct(RequestStack $requestStack, EntityManagerInterface $entityManager,ContainerInterface $container) {
         $this->requestStack = $requestStack;
         $this->entityManager = $entityManager;
+        $this->container = $container;
     }
     
     public function saveLog(EntityStateInterface $entityState)
     {
-        $kmjStateLog = new KmjStateLog();
+        $kmjStateLog = $this->container->get("kematjaya.object_manager")->getModel("KmjStateLog");
         if($entityState->getPrevState()) {
             $kmjStateLog->setPrevStatus($entityState->getPrevState()->getId());
         }
