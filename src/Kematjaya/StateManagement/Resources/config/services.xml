@@ -10,6 +10,7 @@
             <argument type="service" id="request_stack" />
             <argument type="service" id="doctrine.orm.default_entity_manager" />
             <argument type="service" id="service_container" />
+            <argument type="service" id="security.token_storage" />
         </service>
         
         <service public="true" id="kematjaya.form_state_inject" class="Kematjaya\StateManagement\Utils\KmjFormStateInject">
@@ -17,9 +18,15 @@
             <argument type="service" id="service_container" />
         </service>
         
-        <service id="Kematjaya\StateManagement\EventListener\StateLogListener" class="Kematjaya\StateManagement\EventListener\StateLogListener" public="true">
+        <service id="Kematjaya\StateManagement\EventListener\StateLogListener" class="Kematjaya\StateManagement\EventListener\StateLogListener">
             <argument type="service" id="service_container" />
             <tag name="doctrine.event_listener" event="onFlush" />
+        </service>
+        
+        <service id="Kematjaya\StateManagement\EventListener\PostOwnerStateListener" class="Kematjaya\StateManagement\EventListener\PostOwnerStateListener">
+            <argument type="service" id="service_container" />
+            <argument type="service" id="security.token_storage" />
+            <tag name="doctrine.event_listener" event="postLoad" />
         </service>
         
         <service id="kematjaya.object_manager" class="Kematjaya\StateManagement\Utils\ObjectManager" public="true">

@@ -13,6 +13,7 @@ use Kematjaya\StateManagement\Model\KmjStateLog;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class KmjStateLogProvider {
     
@@ -22,10 +23,17 @@ class KmjStateLogProvider {
     
     private $container;
     
-    public function __construct(RequestStack $requestStack, EntityManagerInterface $entityManager,ContainerInterface $container) {
+    private $tokenStorage;
+    
+    public function __construct(
+        RequestStack $requestStack, 
+        EntityManagerInterface $entityManager,
+        ContainerInterface $container, 
+        TokenStorageInterface $tokenStorage) {
         $this->requestStack = $requestStack;
         $this->entityManager = $entityManager;
         $this->container = $container;
+        $this->tokenStorage = $tokenStorage;
     }
     
     public function saveLog(EntityStateInterface $entityState)
@@ -39,6 +47,12 @@ class KmjStateLogProvider {
         $kmjStateLog->setCreatedAt(new \DateTime());
         $kmjStateLog->setObjClass(get_class($entityState));
         $kmjStateLog->setObjId($entityState->getId());
+        if($this->tokenStorage->getToken()) {
+            $user = $this->tokenStorage->getToken()->getUser();
+            $kmjStateLog->setUserClass(get_class($user));
+            $kmjStateLog->setUserId($user->getId());
+            $kmjStateLog->setUserName($user->getNameUser());
+        }
         $kmjStateLog->setDescription($entityState->getApprovalDescription());
         $kmjStateLog->setIpAddress($this->requestStack->getCurrentRequest()->getClientIp());
         
@@ -48,7 +62,9 @@ class KmjStateLogProvider {
     public function getLogs(EntityStateInterface $entityState)
     {
         return $this->entityManager->createQueryBuilder()->select("this")->from(KmjStateLog::class, 'this')
-                ->where('this.obj_class = :obj_class')->setParameter('obj_class', get_class($entityState))
+                ->where('this.obj_class = :obj_class AND this.obj_id = :obj_id')
+                ->setParameter('obj_class', get_class($entityState))
+                ->setParameter('obj_id', $entityState->getId())
                 ->orderBy('this.created_at', 'DESC')->getQuery()->getResult();
     }
 }

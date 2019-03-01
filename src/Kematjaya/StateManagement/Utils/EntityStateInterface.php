@@ -27,4 +27,12 @@ interface EntityStateInterface {
     public function setApprovalDescription($approval_description);
     
     public function getPrevState();
+    
+    public function allowToEdit() :bool;
+    
+    public function allowToAction() :bool;
+    
+    public function getStartCode() :string;
+    
+    public function getStateColumnName() :string;
 }

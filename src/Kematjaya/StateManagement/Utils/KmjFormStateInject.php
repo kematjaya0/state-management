@@ -18,7 +18,12 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Kematjaya\StateManagement\Form\Type\HiddenDateTimeType;
 use Shapecode\Bundle\HiddenEntityTypeBundle\Form\Type\HiddenEntityType;
 
 class KmjFormStateInject {
@@ -71,54 +76,84 @@ class KmjFormStateInject {
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($class) {
             $data = $event->getData();
             $form = $event->getForm();
-            if($data->getState()){
-                $myState = $this->entityManager->createQueryBuilder()->select('state')->from($this->container->get("kematjaya.object_manager")->getModelClass("KmjState"), 'state')
-                            ->where("state.id = :id")->setParameter("id", $data->getState()->getId())
-                            ->getQuery()->useQueryCache(true)->getOneOrNullResult();
+            if($data instanceof EntityStateInterface) {
                 
-                if(count($myState->getKmjStateActions())>1) {
-                    
-                    $choices = array();
-                    foreach($myState->getKmjStateActions() as $action) {
-                        $choices[$action->getTargetObj()->getName()] = $action->getTargetObj()->getId();
+                if(!$data->allowToEdit()) {
+                    foreach($form as $k => $value) {
+                        switch(get_class($form->get($k)->getConfig()->getType()->getInnerType()))  {
+                            case TextType::class:
+                            case NumberType::class:
+                            case IntegerType::class:
+                            case TextareaType::class:
+                            case ChoiceType::class:
+                                $form->add($k, HiddenType::class);
+                                break;
+                            case DateTimeType::class:
+                                $form->add($k, HiddenDateTimeType::class);
+                                break;
+                            case EntityType::class:
+                                $options = $form->get($k)->getConfig()->getOptions();
+                                $form->add($k, HiddenEntityType::class, ["class" => $options["class"]]);
+                                break;
+                            default:
+                                break;
+                        }
                     }
+                }
                 
-                    $form->add('approval', ChoiceType::class, ['choices' => $choices, "attr" => ["class" => "form-control"]]);
-                    $form->add('approval_description', TextareaType::class, ['required' => false, "attr" => ["class" => "form-control"]]);
-                } elseif(count($myState->getKmjStateActions()) == 1) {
-                   
-                    $choices = array();
-                    foreach($myState->getKmjStateActions() as $action) {
-                        $choices[$action->getDescription()] = $action->getTargetObj()->getId();
+                if($data->allowToAction()) {
+                    $myState = $this->entityManager->createQueryBuilder()->select('state')->from($this->container->get("kematjaya.object_manager")->getModelClass("KmjState"), 'state')
+                                ->where("state.id = :id")->setParameter("id", $data->getState()->getId())
+                                ->getQuery()->useQueryCache(true)->getOneOrNullResult();
+
+                    if(count($myState->getKmjStateActions())>1) {
+
+                        $choices = array();
+                        foreach($myState->getKmjStateActions() as $action) {
+                            $choices[$action->getTargetObj()->getName()] = $action->getTargetObj()->getId();
+                        }
+
+                        $form->add('approval', ChoiceType::class, ['choices' => $choices, "attr" => ["class" => "form-control"]]);
+                        $form->add('approval_description', TextareaType::class, ['required' => false, "attr" => ["class" => "form-control"]]);
+                    } elseif(count($myState->getKmjStateActions()) == 1) {
+
+                        $choices = array();
+                        foreach($myState->getKmjStateActions() as $action) {
+                            $choices[$action->getDescription()] = $action->getTargetObj()->getId();
+                        }
+
+                        $form->add('approval', ChoiceType::class, ['choices' => $choices, 'expanded' => true, 'multiple' => true]);
+                        $form->add('approval_description', TextareaType::class, ['required' => false, "attr" => ["class" => "form-control"]]);
                     }
                     
-                    $form->add('approval', ChoiceType::class, ['choices' => $choices, 'expanded' => true, 'multiple' => true]);
-                    $form->add('approval_description', TextareaType::class, ['required' => false, "attr" => ["class" => "form-control"]]);
                 }
             }
+                
         });
         
         $builder->addEventListener(FormEvents::PRE_SUBMIT, function(FormEvent $event) use ($class) {
             $data = $event->getData();
             $form = $event->getForm();
+            $obj = $form->getData();
+            if(!$form->has($obj->getStateColumnName())) {
+                throw new \Exception(sprintf("column '%s' not found, please create column '%s' or override the 'getStateColumnName()' methods on you entity to change column name. ", $obj->getStateColumnName(), $obj->getStateColumnName()));
+            }
             
-            switch(get_class($form->get("state")->getConfig()->getType()->getInnerType())) {
+            switch(get_class($form->get($obj->getStateColumnName())->getConfig()->getType()->getInnerType())) {
                 case HiddenEntityType::class:
-                    $trUsulan = $form->getData();
-                    if(!$trUsulan->getState()) {
-                        $code = "draft";
-                        $firstSTate = $this->entityManager->createQueryBuilder()
+                    if(!$obj->getState()) {
+                        $firstState = $this->entityManager->createQueryBuilder()
                                 ->select('state')
                                 ->from($this->container->get("kematjaya.object_manager")->getModelClass("KmjState"), 'state')
                                 ->where("state.obj_class = :obj_class and state.code=:code")
-                                ->setParameters(new ArrayCollection(array(new Parameter("obj_class", $class), new Parameter("code", $code))))
+                                ->setParameters(new ArrayCollection(array(new Parameter("obj_class", $class), new Parameter("code", $obj->getStartCode()))))
                                 ->getQuery()->useQueryCache(true)->getOneOrNullResult();
                     
-                        if(!$firstSTate) {
-                            throw new \Exception('state with code "draft" and obj_class "'.$class.'" not found.');
+                        if(!$firstState) {
+                            throw new \Exception('state with code "'.$obj->getStartCode().'" and obj_class "'.$class.'" not found.');
                         }
                         
-                        $data["state"] = $firstSTate->getId();
+                        $data[$obj->getStateColumnName()] = $firstState->getId();
                         $event->setData($data);
                     }
                     break;
