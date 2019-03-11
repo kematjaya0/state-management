@@ -35,17 +35,17 @@ class KmjState
     protected $sequence;
 
     /**
-     * @ORM\OneToMany(targetEntity="Kematjaya\StateManagement\Model\KmjStateLink", mappedBy="state")
+     * @ORM\OneToMany(targetEntity="Kematjaya\StateManagement\Model\KmjStateLink", mappedBy="state", orphanRemoval=true)
      */
     protected $kmjStateLinks;
 
     /**
-     * @ORM\OneToMany(targetEntity="Kematjaya\StateManagement\Model\KmjStateAction", mappedBy="state")
+     * @ORM\OneToMany(targetEntity="Kematjaya\StateManagement\Model\KmjStateAction", mappedBy="state", orphanRemoval=true)
      */
     protected $kmjStateActions;
 
     /**
-     * @ORM\OneToMany(targetEntity="Kematjaya\StateManagement\Model\KmjStateLog", mappedBy="state")
+     * @ORM\OneToMany(targetEntity="Kematjaya\StateManagement\Model\KmjStateLog", mappedBy="state", orphanRemoval=true)
      */
     protected $kmjStateLogs;
 
