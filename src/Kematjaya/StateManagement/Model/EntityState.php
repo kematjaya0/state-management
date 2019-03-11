@@ -130,6 +130,11 @@ class EntityState implements EntityStateInterface {
         return 'draft';
     }
     
+    public function getFinishCode() :string
+    {
+        return 'finish';
+    }
+    
     public function getStateColumnName() :string
     {
         return 'state';

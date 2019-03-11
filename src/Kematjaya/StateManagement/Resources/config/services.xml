@@ -13,10 +13,18 @@
             <argument type="service" id="security.token_storage" />
         </service>
         
-        <service public="true" id="kematjaya.form_state_inject" class="Kematjaya\StateManagement\Utils\KmjFormStateInject">
+        <service id="Kematjaya\StateManagement\Utils\KmjStateProvider" class="Kematjaya\StateManagement\Utils\KmjStateProvider">
             <argument type="service" id="doctrine.orm.default_entity_manager" />
             <argument type="service" id="service_container" />
         </service>
+        
+        <service public="true" id="kematjaya.form_state_inject" class="Kematjaya\StateManagement\Utils\KmjFormStateInject">
+            <argument type="service" id="doctrine.orm.default_entity_manager" />
+            <argument type="service" id="service_container" />
+            <argument type="service" id="Kematjaya\StateManagement\Utils\KmjStateProvider" />
+        </service>
+        
+        
         
         <service id="Kematjaya\StateManagement\EventListener\StateLogListener" class="Kematjaya\StateManagement\EventListener\StateLogListener">
             <argument type="service" id="service_container" />

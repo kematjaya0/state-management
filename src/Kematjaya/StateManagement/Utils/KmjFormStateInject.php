@@ -9,8 +9,6 @@
 namespace Kematjaya\StateManagement\Utils;
 
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\ORM\Query\Parameter;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvents;
@@ -25,6 +23,8 @@ use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Kematjaya\StateManagement\Form\Type\HiddenDateTimeType;
 use Shapecode\Bundle\HiddenEntityTypeBundle\Form\Type\HiddenEntityType;
+use Kematjaya\StateManagement\Utils\KmjStateProvider;
+use Kematjaya\StateManagement\Form\Type\FloatingNumberType;
 
 class KmjFormStateInject {
     
@@ -32,9 +32,12 @@ class KmjFormStateInject {
     
     private $container;
     
-    function __construct(EntityManagerInterface $entityManager, ContainerInterface $container) {
+    private $stateProvider;
+    
+    function __construct(EntityManagerInterface $entityManager, ContainerInterface $container, KmjStateProvider $stateProvider) {
         $this->entityManager = $entityManager;
         $this->container = $container;
+        $this->stateProvider = $stateProvider;
     }
     
     public function addFormField(FormBuilderInterface $builder, $class)
@@ -86,6 +89,7 @@ class KmjFormStateInject {
                             case IntegerType::class:
                             case TextareaType::class:
                             case ChoiceType::class:
+                            case FloatingNumberType::class:
                                 $form->add($k, HiddenType::class);
                                 break;
                             case DateTimeType::class:
@@ -142,13 +146,7 @@ class KmjFormStateInject {
             switch(get_class($form->get($obj->getStateColumnName())->getConfig()->getType()->getInnerType())) {
                 case HiddenEntityType::class:
                     if(!$obj->getState()) {
-                        $firstState = $this->entityManager->createQueryBuilder()
-                                ->select('state')
-                                ->from($this->container->get("kematjaya.object_manager")->getModelClass("KmjState"), 'state')
-                                ->where("state.obj_class = :obj_class and state.code=:code")
-                                ->setParameters(new ArrayCollection(array(new Parameter("obj_class", $class), new Parameter("code", $obj->getStartCode()))))
-                                ->getQuery()->useQueryCache(true)->getOneOrNullResult();
-                    
+                        $firstState = $this->stateProvider->getFirstState($obj);
                         if(!$firstState) {
                             throw new \Exception('state with code "'.$obj->getStartCode().'" and obj_class "'.$class.'" not found.');
                         }

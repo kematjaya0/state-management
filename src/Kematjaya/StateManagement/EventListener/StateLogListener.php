@@ -28,12 +28,13 @@ class StateLogListener {
             if ($entity instanceof EntityStateInterface) {
                 
                 $logProvider = $this->container->get('kematjaya.state.state_log_provider');
-                
                 $stateLog = $logProvider->saveLog($entity);
-
-                $entityManager->persist($stateLog);
-                $classMetadata = $entityManager->getClassMetadata(get_class($stateLog));
-                $uow->computeChangeSet($classMetadata, $stateLog);
+                if($stateLog) {
+                    $entityManager->persist($stateLog);
+                    $classMetadata = $entityManager->getClassMetadata(get_class($stateLog));
+                    $uow->computeChangeSet($classMetadata, $stateLog);
+                }
+                    
             }
         }
     }

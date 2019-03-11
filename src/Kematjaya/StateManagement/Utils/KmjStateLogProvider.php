@@ -39,24 +39,25 @@ class KmjStateLogProvider {
     public function saveLog(EntityStateInterface $entityState)
     {
         $kmjStateLog = $this->container->get("kematjaya.object_manager")->getModel("KmjStateLog");
-        if($entityState->getPrevState()) {
+        if($entityState->getPrevState() && ($entityState->getPrevState()->getId() !== $entityState->getState()->getId())) {
             $kmjStateLog->setPrevStatus($entityState->getPrevState()->getId());
+            $kmjStateLog->setState($entityState->getState());
+            $kmjStateLog->setCreatedAt(new \DateTime());
+            $kmjStateLog->setObjClass(get_class($entityState));
+            $kmjStateLog->setObjId($entityState->getId());
+            if($this->tokenStorage->getToken()) {
+                $user = $this->tokenStorage->getToken()->getUser();
+                $kmjStateLog->setUserClass(get_class($user));
+                $kmjStateLog->setUserId($user->getId());
+                $kmjStateLog->setUserName($user->getNameUser());
+            }
+            $kmjStateLog->setDescription($entityState->getApprovalDescription());
+            $kmjStateLog->setIpAddress($this->requestStack->getCurrentRequest()->getClientIp());
+            
+            return $kmjStateLog;
         }
         
-        $kmjStateLog->setState($entityState->getState());
-        $kmjStateLog->setCreatedAt(new \DateTime());
-        $kmjStateLog->setObjClass(get_class($entityState));
-        $kmjStateLog->setObjId($entityState->getId());
-        if($this->tokenStorage->getToken()) {
-            $user = $this->tokenStorage->getToken()->getUser();
-            $kmjStateLog->setUserClass(get_class($user));
-            $kmjStateLog->setUserId($user->getId());
-            $kmjStateLog->setUserName($user->getNameUser());
-        }
-        $kmjStateLog->setDescription($entityState->getApprovalDescription());
-        $kmjStateLog->setIpAddress($this->requestStack->getCurrentRequest()->getClientIp());
-        
-        return $kmjStateLog;
+        return null;
     }
     
     public function getLogs(EntityStateInterface $entityState)

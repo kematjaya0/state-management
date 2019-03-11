@@ -24,6 +24,7 @@
                             <table class="table table-hover">
                                 <thead>
                                     <tr>
+                                        <th>{{'obj_class'|trans}}</th>
                                         <th>{{'code'|trans}}</th>
                                         <th>{{'name'|trans}}</th>
                                         <th>{{'sequence'|trans}}</th>
@@ -35,6 +36,7 @@
                                     {{include('@KmjState/state/_filters.html.twig')}}
                                     {% for kmj_state in pagers.currentPageResults %}
                                     <tr>
+                                        <td>{{kmj_state.objClass}}</td>
                                         <td>{{kmj_state.code}}</td>
                                         <td>{{kmj_state.name}}</td>
                                         <td>{{kmj_state.sequence}}</td>
@@ -44,7 +46,7 @@
                                     </tr>
                                     {% else %}
                                     <tr>
-                                        <td colspan="4">{{'no_data'|trans}}</td>
+                                        <td colspan="5s">{{'no_data'|trans}}</td>
                                     </tr>
                                     {% endfor %}
                                 </tbody>

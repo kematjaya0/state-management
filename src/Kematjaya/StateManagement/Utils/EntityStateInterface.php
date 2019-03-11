@@ -34,5 +34,7 @@ interface EntityStateInterface {
     
     public function getStartCode() :string;
     
+    public function getFinishCode() :string;
+    
     public function getStateColumnName() :string;
 }

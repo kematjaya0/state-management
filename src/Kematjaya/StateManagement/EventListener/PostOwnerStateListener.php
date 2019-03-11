@@ -12,6 +12,7 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Kematjaya\StateManagement\Utils\EntityStateInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 class PostOwnerStateListener {
     
@@ -32,7 +33,10 @@ class PostOwnerStateListener {
         if ($entity instanceof EntityStateInterface && !$entity->getOwner()) {
             $logProvider = $logProvider = $this->container->get('kematjaya.state.state_log_provider');
             $entity->setLogProvider($logProvider);
-            $entity->setOwner($this->tokenStorage->getToken()->getUser());
+            if($this->tokenStorage->getToken()->getUser() instanceof UserInterface) {
+                $entity->setOwner($this->tokenStorage->getToken()->getUser());
+            }
+            
         }
     }
     
